@@ -1,6 +1,8 @@
-import type { Request, Response } from "express";
-import type { post, postParams } from "./post.types.js";
-import { createPostService, getPostService } from "./posts.service.js";
+import { request, response, type Request, type Response } from "express";
+import type { position, post, postParams } from "./post.types.js";
+import { createPostService, getPostService, locationService, myPostService } from "./posts.service.js";
+import type { RequestHandler } from "express-serve-static-core";
+
 
 
 
@@ -15,7 +17,7 @@ export async function createPostController(req:Request<{} , {} , post>, res:Resp
         await createPostService(data)
         console.log("createPostService Successfull")
         return res.status(201).json({
-            message:"Post created",
+            message:"Post created"
         })
     }
     catch(err){
@@ -30,37 +32,64 @@ export async function createPostController(req:Request<{} , {} , post>, res:Resp
 
 }
 
-export async function getPostController(req: Request<postParams>, res:Response){
-
-    const { id } = req.params as postParams
+export const   getPostController: RequestHandler<postParams> = async (req , res) =>{
+    
+    const id = req.params.id
     const postId = Number(id)
 
-    if(Number.isNaN(postId)){
-        return res.status(400).json({
-            message: "Invalid post id"
-        })
-    }
-
     try{
-        const post = await getPostService(postId)
+    const post = getPostService(postId)
 
-        if(!post){
-            return res.status(404).json({
-                message: "Post not found"
-            })
-        }
-
-        return res.status(200).json({
-            post
-        })
+    res.status(200).json({
+        message:"Post Found!",
+        data:post
+    })
+    console.log("getPostService Success!")
     }
     catch(err){
+
+        res.status(500).json({
+            message:"Internal Server Error"
+        })
+
         console.log("getPostService Failed!")
         console.log(err)
+    }
+}
 
-        return res.status(500).json({
-            message: "Failed to get post"
+export async function myPostController(req:Request , res:Response){
+
+    const id = req.user.id
+
+    try{
+
+        const posts = myPostService(id)
+
+        return res.status(200).json({
+            message:"Posts found",
+            data:posts
         })
+
+    }
+    catch(err){
+        
+        return res.status(500).json({
+            message:"Internal server error"
+        })
+
     }
 
 }
+
+export async function nearbyEventsController(req:Request<{} , {} , position> , res:Response){
+
+    
+
+    const location = locationService(req.body)
+
+
+    //TODO: get the location and the post near the location
+    const state = location
+
+}
+

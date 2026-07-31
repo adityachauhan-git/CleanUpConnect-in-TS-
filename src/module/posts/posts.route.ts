@@ -1,10 +1,13 @@
 import { Router } from "express";
 import { authMiddleware } from "../auth/auth.middleware.js";
-import { createPostController, getPostController } from "./posts.controller.js";
+import { createPostController, getPostController, myPostController, nearbyEventsController } from "./posts.controller.js";
+
 
 const router = Router()
 
-router.post("/post" , authMiddleware ,  createPostController)
-router.get("/post/:id" , authMiddleware , getPostController)
+router.post("/post" , authMiddleware , createPostController )
+router.get("/post/:id" , getPostController)
+router.get("/myposts" , authMiddleware , myPostController)
+router.get("/nearby" , nearbyEventsController)
 
 export default router

@@ -6,3 +6,8 @@ export interface post{
 export interface postParams{
     id:string
 }
+
+export interface position{
+    latitude:number,
+    longitude:number
+}

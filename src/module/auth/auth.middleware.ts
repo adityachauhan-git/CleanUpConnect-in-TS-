@@ -7,14 +7,16 @@ export async function authMiddleware(req:Request, res:Response, next:NextFunctio
 
     const tokens = {
         ACCESS_TOKEN : req.cookies.accessToken , 
-        REFRESH_TOKEN : req.cookies.refreshToken
+        
     }
 
-    const accessToken = jwt.verify(tokens.ACCESS_TOKEN , process.env.ACCESS_TOKEN_KEY!)
-    
-    req.user = accessToken
+    const user = jwt.verify(tokens.ACCESS_TOKEN , process.env.ACCESS_TOKEN_KEY!)
 
-    if(!accessToken){
+
+    
+    req.user = user
+
+    if(!user){
         return {}
     }
 
