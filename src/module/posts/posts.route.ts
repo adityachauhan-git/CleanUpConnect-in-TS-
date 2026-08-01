@@ -7,7 +7,9 @@ const router = Router()
 
 router.post("/post" , authMiddleware , createPostController )
 router.get("/post/:id" , getPostController)
+router.get("/posts" , )
 router.get("/myposts" , authMiddleware , myPostController)
-router.get("/nearby" , nearbyEventsController)
+router.get("/nearby" ,authMiddleware, nearbyEventsController)
+
 
 export default router

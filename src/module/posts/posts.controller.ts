@@ -1,7 +1,8 @@
 import { request, response, type Request, type Response } from "express";
 import type { position, post, postParams } from "./post.types.js";
-import { createPostService, getPostService, locationService, myPostService } from "./posts.service.js";
+import { createPostService, getPostService, getPostsService, locationService, myPostService, nearbyEventService } from "./posts.service.js";
 import type { RequestHandler } from "express-serve-static-core";
+import { after } from "node:test";
 
 
 
@@ -10,7 +11,8 @@ export async function createPostController(req:Request<{} , {} , post>, res:Resp
 
     const data = {
         title: req.body.title,
-        content:req.body.content
+        content:req.body.content,
+        location:req.body.location
     }
 
     try{
@@ -37,8 +39,12 @@ export const   getPostController: RequestHandler<postParams> = async (req , res)
     const id = req.params.id
     const postId = Number(id)
 
+    const after = Number(req.query.after)
+
     try{
-    const post = getPostService(postId)
+    
+    
+    const post = await getPostService(postId )
 
     res.status(200).json({
         message:"Post Found!",
@@ -63,7 +69,7 @@ export async function myPostController(req:Request , res:Response){
 
     try{
 
-        const posts = myPostService(id)
+        const posts = await myPostService(id)
 
         return res.status(200).json({
             message:"Posts found",
@@ -81,15 +87,38 @@ export async function myPostController(req:Request , res:Response){
 
 }
 
+export async function getPostsController(req:Request , res:Response){
+
+    const afterQuery = req.query.after
+
+    const after = Number(afterQuery)
+
+    const events = await getPostsService(after)
+
+
+
+}
+
 export async function nearbyEventsController(req:Request<{} , {} , position> , res:Response){
 
-    
 
-    const location = locationService(req.body)
+    const afterQuery = req.query.after
+    const after = Number(afterQuery)
+
+    const location = await locationService(req.body)
 
 
     //TODO: get the location and the post near the location
-    const state = location
+    const state = location.address.state
+
+    const events = await nearbyEventService(state , after)
+
+    return res.status(200).json({
+        message:"Events found",
+        data:events
+    })
 
 }
+
+
 
