@@ -7,17 +7,16 @@ const saltRounds = 12
 
 export async function registerService(data:RegisterBody){
 
-    const {username , password} = data
+    const {username , password } = data
 
     const hashedPassword = bcrypt.hash(password , saltRounds)
 
 
     try{
-        await pool.query("INSERT INTO users(username , hashedPassword) VALUES ($1 , $2)" , [username , hashedPassword])
+        await pool.query("INSERT INTO users(username , role , hashedPassword) VALUES ($1 , $2)" , [username  , hashedPassword])
     }
     catch(err){
         console.log("Something went wrong in registerService")
-        console.log("-----------------------------------------")
         console.log(err)
     }
 }
