@@ -49,6 +49,17 @@ export async function nearbyEventService(state:string , after:number){
 
 export async function getPostsService(after:number){
 
-    const events = await pool.query
+    if(!after){
+
+        const events = await pool.query("SELECT * FROM posts ORDER BY id LIMIT 5")
+
+        return events.rows[0]
+
+    }
+
+    const events = await pool.query("SELECT * FROM posts WHERE id>$1 ORDER BY id ASC LIMIT 5" , [after])
+
+    return events.rows[0]
+
 
 }

@@ -92,10 +92,20 @@ export async function getPostsController(req:Request , res:Response){
     const afterQuery = req.query.after
 
     const after = Number(afterQuery)
+    try{
+        const events = await getPostsService(after)
 
-    const events = await getPostsService(after)
+        return res.status(200).json({
+            message: "Events retrieved successfully",
+            data: events
+        })
+    }
+    catch(err){
 
+        return res.status(500)
 
+        console.log("Error in getPostsService")
+    }
 
 }
 
