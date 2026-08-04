@@ -1,6 +1,6 @@
 import { request, response, type Request, type Response } from "express";
 import type { eventParams, position, post, postParams } from "./post.types.js";
-import { createPostService, getPostService, getRecentPostsService, joinService, locationService, myPostService, nearbyEventService } from "./posts.service.js";
+import { createPostService, getMemberService, getPostService, getRecentPostsService, joinService, locationService, myPostService, nearbyEventService } from "./posts.service.js";
 import type { RequestHandler } from "express-serve-static-core";
 import { after } from "node:test";
 import type { AuthRequest } from "../../types/authRequest.js";
@@ -162,7 +162,28 @@ export async function joinEventController(req:AuthRequest<eventParams> , res:Res
 
 export async function getMemberController(req:Request<postParams> , res:Response){
 
-    const id = Number(req.params.id)
+    const event_id = Number(req.params.id)
+
+    try{
+        const events = await getMemberService(event_id)
+
+        return res.status(200).json({
+            message:"members found",
+            data:events
+        })
+
+        console.log("getMemberService Successfull!")
+
+    }
+    catch(err){
+
+        console.log("getMemberService Failed!")
+        return res.status(500).json({
+            message:"Internal Server Error!"
+        })
+    }
 
 }
+
+
 

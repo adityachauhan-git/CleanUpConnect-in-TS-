@@ -71,3 +71,11 @@ export async function joinService(data:joinData){
     await pool.query("INSERT INTO volenteers(volenteer_id , event_id)  VALUES($1 , $2)" , [user_id , event_id])
 
 }
+
+export async function getMemberService(data:number){
+
+    const result = await pool.query("SELECT * FROM volenteers WHERE event_id = $1" , [data])
+
+    return result.rows[0]
+
+}
