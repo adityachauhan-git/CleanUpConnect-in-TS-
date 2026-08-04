@@ -4,9 +4,7 @@ export interface post{
     location:string
 }
 
-export interface postParams{
-    id:string
-}
+
 
 export interface position{
     latitude:number,
@@ -21,3 +19,21 @@ export interface NominatimResponse {
     postcode?: string;
   };
 }
+
+export interface eventParams {
+
+  id:string
+
+}
+
+export interface joinData{
+
+  event_id:number
+  user_id:number
+
+}
+
+export interface postParams{
+  id:string
+}
+

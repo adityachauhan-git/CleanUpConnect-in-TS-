@@ -45,6 +45,8 @@ export async function loginController(req:Request<{} , {} , LoginBody> , res:Res
     }
     catch(err){
         console.log(err)
+        
+        
     }
 }
 

@@ -1,4 +1,5 @@
 import { pool } from "../../common/config/db.js"
+import type { rewardData } from "./role.types.js"
 
 export async function getCreatorService(id:Number){
 
@@ -27,8 +28,20 @@ export async function eventCompleteService(creator_id:Number){
     }
 }
 
-export async function rewardVolenteerService(id:Number){
+export async function rewardVolenteerService(data:rewardData){
 
-    pool.query("UPDATE users SET  points = points + 5 WHERE id = $1" , [id])
+    const event_id = data.event_id
+    const creator_id = data.creator_id
+    const volenteer_id = data.volenteer_id
+
+    const result = await pool.query("SELECT 1 FROM events WHERE creator_id = $1 AND id = $2" , [creator_id , event_id])
+
+    if(result.rows.length===0){
+        return 0
+    }
+
+    
+    await pool.query("UPDATE users SET  points = points + 5 WHERE id = $1" , [volenteer_id])
+    
 
 }

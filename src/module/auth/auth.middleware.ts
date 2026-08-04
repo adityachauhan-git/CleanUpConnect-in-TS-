@@ -1,26 +1,33 @@
 import type { NextFunction, Request, Response } from "express";
-import type { Tokens } from "./auth.types.js";
+import type { JwtPayload, Tokens } from "./auth.types.js";
 import jwt from "jsonwebtoken"
+import type { AuthRequest } from "../../types/authRequest.js";
 
 
-export async function authMiddleware(req:Request, res:Response, next:NextFunction){
+export async function authMiddleware(req:AuthRequest, res:Response, next:NextFunction){
 
-    const tokens = {
-        ACCESS_TOKEN : req.cookies.accessToken , 
-        
-    }
+    const authHeader = req.headers.authorization  
 
-    const user = jwt.verify(tokens.ACCESS_TOKEN , process.env.ACCESS_TOKEN_KEY!)
+    try{
 
+        if (!authHeader) {
+        return res.sendStatus(401);
+        }
 
+        const token =  authHeader.split(" ")[1]
+
+        if(!token){
+            return res.sendStatus(401)
+        }
+
+        const user = jwt.verify(token , process.env.ACCESS_TOKEN_KEY!) as JwtPayload
     
-    req.user = user
-
-    if(!user){
-        return {}
+        req.user = user
     }
-
-    
+    catch(err){
+        console.log(err)
+        return res.sendStatus(401)
+    }
 
     next()
 }

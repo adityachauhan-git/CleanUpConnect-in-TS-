@@ -13,7 +13,11 @@ export interface Tokens{
     REFRESH_TOKEN:string
 }
 
+
+
 export interface JwtPayload {
   id: string;
   username: string;
+
 }
+

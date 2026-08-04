@@ -1,8 +1,9 @@
 import { request, response, type Request, type Response } from "express";
-import type { position, post, postParams } from "./post.types.js";
-import { createPostService, getPostService, getPostsService, locationService, myPostService, nearbyEventService } from "./posts.service.js";
+import type { eventParams, position, post, postParams } from "./post.types.js";
+import { createPostService, getPostService, getRecentPostsService, joinService, locationService, myPostService, nearbyEventService } from "./posts.service.js";
 import type { RequestHandler } from "express-serve-static-core";
 import { after } from "node:test";
+import type { AuthRequest } from "../../types/authRequest.js";
 
 
 
@@ -34,10 +35,10 @@ export async function createPostController(req:Request<{} , {} , post>, res:Resp
 
 }
 
-export const   getPostController: RequestHandler<postParams> = async (req , res) =>{
+export const   getPostController: RequestHandler<string> = async (req , res) =>{
     
-    const id = req.params.id
-    const postId = Number(id)
+    
+    const postId = Number(req.params)
 
     const after = Number(req.query.after)
 
@@ -63,9 +64,9 @@ export const   getPostController: RequestHandler<postParams> = async (req , res)
     }
 }
 
-export async function myPostController(req:Request , res:Response){
+export async function myPostController(req:AuthRequest , res:Response){
 
-    const id = req.user.id
+    const id = Number(req.user?.id)
 
     try{
 
@@ -87,13 +88,14 @@ export async function myPostController(req:Request , res:Response){
 
 }
 
-export async function getPostsController(req:Request , res:Response){
+export async function getRecentPostsController(req:Request , res:Response){
 
     const afterQuery = req.query.after
+    
 
     const after = Number(afterQuery)
     try{
-        const events = await getPostsService(after)
+        const events = await getRecentPostsService(after)
 
         return res.status(200).json({
             message: "Events retrieved successfully",
@@ -130,5 +132,37 @@ export async function nearbyEventsController(req:Request<{} , {} , position> , r
 
 }
 
+export async function joinEventController(req:AuthRequest<eventParams> , res:Response){
 
+    const user_id = Number(req.user?.id)
+    const event_id = Number(req.params.id)
+
+    const data = {
+        user_id:user_id,
+        event_id:event_id
+    }
+
+    try{
+
+        await joinService(data)
+
+        res.status(200).json({
+            message: "Joined successfully"
+        })
+
+    }
+    catch(err){
+        res.status(500).json({
+            message:"Internal server error"
+        })
+    }
+
+
+}
+
+export async function getMemberController(req:Request<postParams> , res:Response){
+
+    const id = Number(req.params.id)
+
+}
 

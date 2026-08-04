@@ -1,5 +1,5 @@
 import { pool } from "../../common/config/db.js";
-import type { NominatimResponse, position, post } from "./post.types.js";
+import type { joinData, NominatimResponse, position, post } from "./post.types.js";
 
 export async function createPostService(data:post){
     
@@ -47,19 +47,27 @@ export async function nearbyEventService(state:string , after:number){
 
 }
 
-export async function getPostsService(after:number){
+export async function getRecentPostsService(after:number){
 
     if(!after){
 
-        const events = await pool.query("SELECT * FROM posts ORDER BY id LIMIT 5")
+        const events = await pool.query("SELECT * FROM posts ORDER BY DSC id LIMIT 5")
 
         return events.rows[0]
 
     }
 
-    const events = await pool.query("SELECT * FROM posts WHERE id>$1 ORDER BY id ASC LIMIT 5" , [after])
+    const events = await pool.query("SELECT * FROM posts WHERE id>$1 ORDER BY id DSC LIMIT 5" , [after])
 
     return events.rows[0]
 
+
+}
+
+export async function joinService(data:joinData){
+
+    const {user_id , event_id} = data
+
+    await pool.query("INSERT INTO volenteers(volenteer_id , event_id)  VALUES($1 , $2)" , [user_id , event_id])
 
 }
