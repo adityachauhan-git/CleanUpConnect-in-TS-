@@ -80,6 +80,8 @@ export async function myPostController(req:AuthRequest , res:Response){
     }
     catch(err){
         
+        console.log("myPostService Failed!")
+
         return res.status(500).json({
             message:"Internal server error"
         })

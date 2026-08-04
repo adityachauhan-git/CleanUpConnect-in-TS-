@@ -13,7 +13,7 @@ export async function registerService(data:RegisterBody){
 
 
     try{
-        await pool.query("INSERT INTO users(username , role , hashedPassword) VALUES ($1 , $2)" , [username  , hashedPassword])
+        await pool.query("INSERT INTO users(username , role , hashed_password) VALUES ($1 , $2)" , [username  , hashedPassword])
     }
     catch(err){
         console.log("Something went wrong in registerService")
