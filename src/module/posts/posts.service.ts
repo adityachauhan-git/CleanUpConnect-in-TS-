@@ -3,7 +3,7 @@ import type { joinData, NominatimResponse, position, post } from "./post.types.j
 
 export async function createPostService(data:post){
     
-    const postQuery = await pool.query("INSERT INTO posts(title , content , location) VALUES ($1 , $2 , $3)" , [data.title , data.content , data.location])
+    const postQuery = await pool.query("INSERT INTO posts(title , content , location , creator_id) VALUES ($1 , $2 , $3 , $4)" , [data.title , data.content , data.location , data.creator_id])
     console.log("Post created")
  
 }

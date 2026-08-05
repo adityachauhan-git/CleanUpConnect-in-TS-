@@ -13,7 +13,8 @@ export async function createPostController(req:Request<{} , {} , post>, res:Resp
     const data = {
         title: req.body.title,
         content:req.body.content,
-        location:req.body.location
+        location:req.body.location,
+        creator_id:Number(req.user?.id)
     }
 
     try{
