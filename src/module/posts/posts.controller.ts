@@ -37,23 +37,22 @@ export async function createPostController(req:Request<{} , {} , post>, res:Resp
 
 }
 
-export const   getPostController: RequestHandler<string> = async (req , res) =>{
+export const   getPostController: RequestHandler<postParams> = async (req , res) =>{
     
     
-    const postId = Number(req.params)
+    const postId = Number(req.params.id)
 
     const after = Number(req.query.after)
 
     try{
     
     
-    const post = await getPostService(postId )
+        const post = await getPostService(postId )
 
-    res.status(200).json({
-        message:"Post Found!",
-        data:post
-    })
-    console.log("getPostService Success!")
+        return res.status(200).json({
+            message:"Post Found!",
+            data:post
+        })
     }
     catch(err){
 
@@ -69,6 +68,7 @@ export const   getPostController: RequestHandler<string> = async (req , res) =>{
 export async function myPostController(req:AuthRequest , res:Response){
 
     const id = Number(req.user?.id)
+    
 
     try{
 
@@ -82,7 +82,7 @@ export async function myPostController(req:AuthRequest , res:Response){
     }
     catch(err){
         
-        console.log("myPostService Failed!")
+        console.log("myPostService Failed!" , err)
 
         return res.status(500).json({
             message:"Internal server error"
@@ -94,6 +94,7 @@ export async function myPostController(req:AuthRequest , res:Response){
 
 export async function getRecentPostsController(req:Request , res:Response){
 
+    console.log("recent post controller")
     const afterQuery = req.query.after
     
 
@@ -136,11 +137,11 @@ export async function nearbyEventsController(req:Request<{} , {} , position> , r
 
 }
 
-export async function joinEventController(req:AuthRequest<eventParams> , res:Response){
+export const joinEventController:RequestHandler<eventParams> = async (req , res) =>{
 
     const user_id = Number(req.user?.id)
-    const event_id = Number(req.params.id)
-
+    const event_id = Number(req.params.eventid)
+     
     const data = {
         user_id:user_id,
         event_id:event_id
@@ -156,6 +157,9 @@ export async function joinEventController(req:AuthRequest<eventParams> , res:Res
 
     }
     catch(err){
+
+        console.log(err)
+
         res.status(500).json({
             message:"Internal server error"
         })
@@ -182,6 +186,7 @@ export async function getMemberController(req:Request<postParams> , res:Response
     catch(err){
 
         console.log("getMemberService Failed!")
+        console.log(err)
         return res.status(500).json({
             message:"Internal Server Error!"
         })

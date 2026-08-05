@@ -23,7 +23,7 @@ export interface NominatimResponse {
 
 export interface eventParams {
 
-  id:string
+  eventid:string
 
 }
 

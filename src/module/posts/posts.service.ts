@@ -10,7 +10,7 @@ export async function createPostService(data:post){
 
 export async function getPostService(id:number){
 
-    
+    console.log(id)
     const postQuery = await pool.query("SELECT * FROM posts WHERE id = $1 ORDER BY id LIMIT 5" , [id])
 
     const post = postQuery.rows[0]
@@ -21,7 +21,11 @@ export async function getPostService(id:number){
 
 export async function myPostService(userId:number){
 
-    const allPostQuery = await pool.query("SELECT * FROM posts WHERE user_id=$1 ORDER BY id LIMIT 6" , [userId])
+   
+
+    const allPostQuery = await pool.query("SELECT * FROM posts WHERE creator_id=$1 ORDER BY id LIMIT 6" , [userId])
+
+    
 
     return allPostQuery.rows[0]
 
@@ -48,11 +52,11 @@ export async function nearbyEventService(state:string , after:number){
 }
 
 export async function getRecentPostsService(after:number){
-
+    
     if(!after){
 
-        const events = await pool.query("SELECT * FROM posts ORDER BY DSC id LIMIT 5")
-
+        const events = await pool.query("SELECT * FROM posts ORDER BY id DESC LIMIT 5")
+        console.log(events)
         return events.rows[0]
 
     }
@@ -67,6 +71,8 @@ export async function getRecentPostsService(after:number){
 export async function joinService(data:joinData){
 
     const {user_id , event_id} = data
+
+    console.log(data)
 
     await pool.query("INSERT INTO volenteers(volenteer_id , event_id)  VALUES($1 , $2)" , [user_id , event_id])
 
