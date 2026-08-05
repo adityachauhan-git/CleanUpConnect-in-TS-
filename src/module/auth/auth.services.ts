@@ -9,16 +9,13 @@ export async function registerService(data:RegisterBody){
 
     const {username , password } = data
 
-    const hashedPassword = bcrypt.hash(password , saltRounds)
+    const hashedPassword = await bcrypt.hash(password , saltRounds)
 
+    console.log(hashedPassword)
 
-    try{
-        await pool.query("INSERT INTO users(username , role , hashed_password) VALUES ($1 , $2)" , [username  , hashedPassword])
-    }
-    catch(err){
-        console.log("Something went wrong in registerService")
-        console.log(err)
-    }
+    await pool.query("INSERT INTO users(username , hashed_password) VALUES ($1 , $2)" , [username  , hashedPassword])
+    
+    
 }
 
 export async function loginService(data:LoginBody):Promise<Tokens>{
