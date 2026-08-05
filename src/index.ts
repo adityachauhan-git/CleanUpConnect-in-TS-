@@ -5,12 +5,12 @@ import authRouter from "./module/auth/auth.routes.js"
 import roleRouter from "./module/role/role.route.js"
 
 const app = express()
+app.use(express.json())
 
 app.use("/post" , postRouter)
 app.use("/auth" , authRouter)
 app.use("/points" , roleRouter)
 
-app.use(express.json())
 
 const PORT = process.env.PORT
 

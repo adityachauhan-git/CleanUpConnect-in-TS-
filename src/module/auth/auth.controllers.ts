@@ -1,11 +1,13 @@
 import type { Request, Response } from "express";
 import type { LoginBody, RegisterBody } from "./auth.types.js";
 import { loginService, registerService } from "./auth.services.js";
+import type { AuthRequest } from "../../types/authRequest.js";
 
 
-async function registerController(req:Request<{} , {} , RegisterBody> , res:Response){
+async function registerController(req:AuthRequest<{} , {} , RegisterBody> , res:Response){
 
     const data = req.body
+    console.log(data)
     try{
         const result = await registerService(data)
         res.status(200).json({

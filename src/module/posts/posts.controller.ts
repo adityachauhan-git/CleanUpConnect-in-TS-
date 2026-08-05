@@ -16,6 +16,7 @@ export async function createPostController(req:Request<{} , {} , post>, res:Resp
         location:req.body.location,
         creator_id:Number(req.user?.id)
     }
+    
 
     try{
         await createPostService(data)
