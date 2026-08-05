@@ -23,8 +23,11 @@ export async function loginService(data:LoginBody):Promise<Tokens>{
     const {username , password} = data
 
     
+    
 
     const usersQuery = await pool.query("SELECT * FROM users where username = $1" , [username])
+
+    
 
     if(usersQuery.rowCount===0){
         console.log("User not found!")
@@ -40,7 +43,9 @@ export async function loginService(data:LoginBody):Promise<Tokens>{
     
     
 
-    const isPasswordCorrect = bcrypt.compare(password , user.hashedPassword)
+    const isPasswordCorrect = await bcrypt.compare(password , user.hashed_password)
+
+    
 
     if(!isPasswordCorrect){
         console.log("Incorrect Password")

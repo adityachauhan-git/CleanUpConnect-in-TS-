@@ -18,6 +18,7 @@ async function registerController(req:AuthRequest<{} , {} , RegisterBody> , res:
         console.log(err)
 
         res.status(500).json({
+            //@ts-ignore
             error:err.detail
         })
 

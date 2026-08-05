@@ -8,6 +8,8 @@ export async function authMiddleware(req:AuthRequest, res:Response, next:NextFun
 
     const authHeader = req.headers.authorization  
 
+    console.log(authHeader)
+
     try{
 
         if (!authHeader) {
@@ -16,11 +18,15 @@ export async function authMiddleware(req:AuthRequest, res:Response, next:NextFun
 
         const token =  authHeader.split(" ")[1]
 
+        console.log(token)
+
         if(!token){
             return res.sendStatus(401)
         }
+        console.log(process.env.ACCESS_TOKEN_KEY)
+        const user = jwt.verify(token , process.env.ACCESS_TOKEN_SECRET!) as JwtPayload
 
-        const user = jwt.verify(token , process.env.ACCESS_TOKEN_KEY!) as JwtPayload
+        console.log(user)
     
         req.user = user
     }
