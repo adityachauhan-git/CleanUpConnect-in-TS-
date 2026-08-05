@@ -6,10 +6,10 @@ import { createPostController, getMemberController, getPostController, getRecent
 
 const router = Router()
 
-router.post("/post" , authMiddleware , createPostController )
-router.get("/post/:id" ,authMiddleware, getPostController)
-router.get("/posts" ,authMiddleware, getRecentPostsController)
-router.get("/myposts" , authMiddleware , myPostController)
+router.post("/" , authMiddleware , createPostController )
+router.get("/:id" ,authMiddleware, getPostController)
+router.get("/recent" ,authMiddleware, getRecentPostsController)
+router.get("/me" , authMiddleware , myPostController)
 router.post("/join/:eventid" , authMiddleware , joinEventController )
 //TODO: check the external api 
 router.get("/nearby" ,authMiddleware, nearbyEventsController)

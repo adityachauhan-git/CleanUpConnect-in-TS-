@@ -5,4 +5,6 @@ import { authMiddleware } from "../auth/auth.middleware.js";
 const router = Router()
 
 router.post("/eventcomplete/:eventid" ,  eventCompleteController)
-router.post("/rewardvolenteer/:userid" , authMiddleware , rewardVolenteerController)
+router.post("/volenteer/:userid" , authMiddleware , rewardVolenteerController)
+
+export default router
