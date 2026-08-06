@@ -7,7 +7,7 @@ import { authMiddleware } from "../auth/auth.middleware.js";
 
 const router = Router();
 
-router.post("/eventcomplete/:eventid", eventCompleteController);
+router.post("/eventcomplete/:eventid",authMiddleware, eventCompleteController);
 router.post("/volenteer/:userid", authMiddleware, rewardVolenteerController);
 
 export default router;
