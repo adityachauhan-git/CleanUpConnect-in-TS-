@@ -142,6 +142,8 @@ export const joinEventController: RequestHandler<eventParams> = async (
   try {
     await joinService(data);
 
+    
+
     res.status(200).json({
       message: "Joined successfully",
     });

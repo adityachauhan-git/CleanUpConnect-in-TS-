@@ -9,9 +9,30 @@ import type {
   post,
 } from "./post.types.js";
 
-async function increaseXPService(xp:Number , id:Number){
+async function increaseXPService(xp:number , id:number){
 
-  pool.query("UPDATE users WHERE id = $1 SET xp = xp+$2" , [id , ])
+  const newXPQUery = await pool.query("UPDATE users WHERE id = $1 SET xp = xp+$2 RETURNING xp , level" , [id , xp])
+
+  const { newXp, level} =  newXPQUery.rows[0]
+
+  return{
+    newXP:newXp,
+    level:level
+  }
+
+}
+
+async function levelService(xp:number , oldLevel:number , user_id:number){
+
+  const newLevel =  Math.floor(xp/50)
+
+  if(newLevel<oldLevel){
+    return {
+      level:oldLevel
+    }
+  }
+
+  pool.query("UPDATE users WHERE id = $1 SET level = $2" , [user_id,newLevel])
 
 }
 
@@ -21,6 +42,11 @@ export async function createPostService(data: post) {
     [data.title, data.content, data.location, data.creator_id]
   );
 
+  const newXP = await increaseXPService(30 , data.creator_id)
+
+  const level = await levelService(newXP.newXP , newXP.level, data.creator_id)
+
+  
 
   console.log("Post created");
 }
@@ -92,6 +118,9 @@ export async function joinService(data: eventData) {
     "INSERT INTO volenteers(volenteer_id , event_id)  VALUES($1 , $2)",
     [user_id, event_id],
   );
+
+  increaseXPService()
+
 }
 
 export async function getMemberService(data: number) {
