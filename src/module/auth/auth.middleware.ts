@@ -10,8 +10,6 @@ export async function authMiddleware(
 ) {
   const authHeader = req.headers.authorization;
 
-  console.log(authHeader);
-
   try {
     if (!authHeader) {
       return res.sendStatus(401);

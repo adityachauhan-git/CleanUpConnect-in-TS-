@@ -126,7 +126,7 @@ export async function nearbyEventsController(
 
 export const joinEventController: RequestHandler<eventParams> = async (
   req,
-  res,
+  res
 ) => {
   const user_id = Number(req.user?.id);
   const event_id = Number(req.params.eventid);
@@ -173,4 +173,18 @@ export async function getMemberController(
       message: "Internal Server Error!",
     });
   }
+}
+
+export const updatePostController:RequestHandler<eventParams,post> = async(req , res)=>{
+
+  const event_id = Number(req.params.eventid)
+  const user_id = req.user?.id
+
+  const data = {
+    event_id : event_id,
+    user_id: user_id,
+    
+  }
+
+
 }

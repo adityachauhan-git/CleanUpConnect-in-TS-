@@ -23,10 +23,15 @@ export interface eventParams {
   eventid: string;
 }
 
-export interface joinData {
+export interface eventData {
   event_id: number;
   user_id: number;
+  
 }
+
+
+
+
 
 export interface postParams {
   id: string;

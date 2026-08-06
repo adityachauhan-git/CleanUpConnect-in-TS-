@@ -1,6 +1,6 @@
 import { pool } from "../../common/config/db.js";
 import type {
-  joinData,
+  eventData,
   NominatimResponse,
   position,
   post,
@@ -72,7 +72,7 @@ export async function getRecentPostsService(after: number) {
   return events.rows[0];
 }
 
-export async function joinService(data: joinData) {
+export async function joinService(data: eventData) {
   const { user_id, event_id } = data;
 
   console.log(data);
@@ -90,4 +90,10 @@ export async function getMemberService(data: number) {
   );
 
   return result.rows[0];
+}
+
+export async function updatePostService(data:joinData){
+
+  pool.query("UPDATE posts SET content = $1" , [data.])
+
 }
