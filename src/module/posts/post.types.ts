@@ -1,15 +1,13 @@
-export interface post{
-    title:string
-    content: string
-    location:string
-    creator_id:number
+export interface post {
+  title: string;
+  content: string;
+  location: string;
+  creator_id: number;
 }
 
-
-
-export interface position{
-    latitude:number,
-    longitude:number
+export interface position {
+  latitude: number;
+  longitude: number;
 }
 
 export interface NominatimResponse {
@@ -22,19 +20,14 @@ export interface NominatimResponse {
 }
 
 export interface eventParams {
-
-  eventid:string
-
+  eventid: string;
 }
 
-export interface joinData{
-
-  event_id:number
-  user_id:number
-
+export interface joinData {
+  event_id: number;
+  user_id: number;
 }
 
-export interface postParams{
-  id:string
+export interface postParams {
+  id: string;
 }
-

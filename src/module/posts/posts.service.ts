@@ -1,87 +1,93 @@
 import { pool } from "../../common/config/db.js";
-import type { joinData, NominatimResponse, position, post } from "./post.types.js";
+import type {
+  joinData,
+  NominatimResponse,
+  position,
+  post,
+} from "./post.types.js";
 
-export async function createPostService(data:post){
-    
-    const postQuery = await pool.query("INSERT INTO posts(title , content , location , creator_id) VALUES ($1 , $2 , $3 , $4)" , [data.title , data.content , data.location , data.creator_id])
-    console.log("Post created")
- 
+export async function createPostService(data: post) {
+  const postQuery = await pool.query(
+    "INSERT INTO posts(title , content , location , creator_id) VALUES ($1 , $2 , $3 , $4)",
+    [data.title, data.content, data.location, data.creator_id],
+  );
+  console.log("Post created");
 }
 
-export async function getPostService(id:number){
+export async function getPostService(id: number) {
+  console.log(id);
+  const postQuery = await pool.query(
+    "SELECT * FROM posts WHERE id = $1 ORDER BY id LIMIT 5",
+    [id],
+  );
 
-    console.log(id)
-    const postQuery = await pool.query("SELECT * FROM posts WHERE id = $1 ORDER BY id LIMIT 5" , [id])
+  const post = postQuery.rows[0];
 
-    const post = postQuery.rows[0]
-
-    return post
-
+  return post;
 }
 
-export async function myPostService(userId:number){
+export async function myPostService(userId: number) {
+  const allPostQuery = await pool.query(
+    "SELECT * FROM posts WHERE creator_id=$1 ORDER BY id LIMIT 6",
+    [userId],
+  );
 
-   
-
-    const allPostQuery = await pool.query("SELECT * FROM posts WHERE creator_id=$1 ORDER BY id LIMIT 6" , [userId])
-
-    
-
-    return allPostQuery.rows[0]
-
+  return allPostQuery.rows[0];
 }
 
-export async function locationService(pos:position){
+export async function locationService(pos: position) {
+  const { latitude, longitude } = pos;
 
-    const {latitude , longitude} = pos
+  const location = await fetch(
+    `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${latitude}&format=json`,
+  );
 
-    const location = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${latitude}&format=json`)
+  const res: NominatimResponse = await location.json();
 
-    const res:NominatimResponse = await location.json()
-
-    return res
-
+  return res;
 }
 
-export async function nearbyEventService(state:string , after:number){
+export async function nearbyEventService(state: string, after: number) {
+  const events = await pool.query("SELECT * FROM posts WHERE location = $1 ", [
+    state,
+  ]);
 
-    const events = await pool.query("SELECT * FROM posts WHERE location = $1 " , [state])
-
-    return events.rows[0]
-
+  return events.rows[0];
 }
 
-export async function getRecentPostsService(after:number){
-    
-    if(!after){
+export async function getRecentPostsService(after: number) {
+  if (!after) {
+    const events = await pool.query(
+      "SELECT * FROM posts ORDER BY id DESC LIMIT 5",
+    );
+    console.log(events);
+    return events.rows[0];
+  }
 
-        const events = await pool.query("SELECT * FROM posts ORDER BY id DESC LIMIT 5")
-        console.log(events)
-        return events.rows[0]
+  const events = await pool.query(
+    "SELECT * FROM posts WHERE id>$1 ORDER BY id DSC LIMIT 5",
+    [after],
+  );
 
-    }
-
-    const events = await pool.query("SELECT * FROM posts WHERE id>$1 ORDER BY id DSC LIMIT 5" , [after])
-
-    return events.rows[0]
-
-
+  return events.rows[0];
 }
 
-export async function joinService(data:joinData){
+export async function joinService(data: joinData) {
+  const { user_id, event_id } = data;
 
-    const {user_id , event_id} = data
+  console.log(data);
 
-    console.log(data)
-
-    await pool.query("INSERT INTO volenteers(volenteer_id , event_id)  VALUES($1 , $2)" , [user_id , event_id])
-
+  await pool.query(
+    "INSERT INTO volenteers(volenteer_id , event_id)  VALUES($1 , $2)",
+    [user_id, event_id],
+  );
 }
 
-export async function getMemberService(data:number){
+export async function getMemberService(data: number) {
+  const result = await pool.query(
+    "SELECT * FROM volenteers WHERE event_id = $1",
+    [data],
+  );
 
-    const result = await pool.query("SELECT * FROM volenteers WHERE event_id = $1" , [data])
-
-    return result.rows[0]
-
+  return result.rows[0];
 }
