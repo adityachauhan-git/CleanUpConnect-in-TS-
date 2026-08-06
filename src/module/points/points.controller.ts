@@ -3,9 +3,10 @@ import type { eventParams, postParams } from "../posts/post.types.js";
 import {
   eventCompleteService,
   getCreatorService,
+  leaderboardService,
   rewardVolenteerService,
-} from "./role.serveice.js";
-import type { userid } from "./role.types.js";
+} from "./points.serveice.js";
+import type { leaderboardQuery, userid } from "./points.types.js";
 import type { AuthRequest } from "../../types/authRequest.js";
 
 export async function eventCompleteController(
@@ -55,4 +56,24 @@ export async function rewardVolenteerController(
 
     console.log("rewardVolenteerService Failed!");
   }
+}
+
+export async function leaderboardController(req:Request<{} , {} , {} , leaderboardQuery> , res:Response ){
+
+  try{
+
+
+
+    const leaderboard = leaderboardService(req.query)
+
+    res.send(200).json({
+      
+      data:leaderboard
+    })
+
+  }
+  catch(err){
+
+  }
+
 }

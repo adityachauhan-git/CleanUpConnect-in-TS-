@@ -2,7 +2,7 @@ import express from "express";
 import "dotenv/config";
 import postRouter from "./module/posts/posts.route.js";
 import authRouter from "./module/auth/auth.routes.js";
-import roleRouter from "./module/role/role.route.js";
+import roleRouter from "./module/points/points.route.js";
 
 const app = express();
 app.use(express.json());

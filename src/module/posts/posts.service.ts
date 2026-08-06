@@ -1,16 +1,27 @@
 import { pool } from "../../common/config/db.js";
+import type { userid } from "../points/points.types.js";
 import type {
+  comment,
   eventData,
+  eventParams,
   NominatimResponse,
   position,
   post,
 } from "./post.types.js";
 
+async function increaseXPService(xp:Number , id:Number){
+
+  pool.query("UPDATE users WHERE id = $1 SET xp = xp+$2" , [id , ])
+
+}
+
 export async function createPostService(data: post) {
   const postQuery = await pool.query(
     "INSERT INTO posts(title , content , location , creator_id) VALUES ($1 , $2 , $3 , $4)",
-    [data.title, data.content, data.location, data.creator_id],
+    [data.title, data.content, data.location, data.creator_id]
   );
+
+
   console.log("Post created");
 }
 
@@ -92,8 +103,27 @@ export async function getMemberService(data: number) {
   return result.rows[0];
 }
 
-export async function updatePostService(data:joinData){
+export async function updatePostService(data:JoinData){
 
-  pool.query("UPDATE posts SET content = $1" , [data.])
+  pool.query("UPDATE posts SET content = $1" , [data])
 
+}
+
+export async function addCommentService(commentBody:comment  , eventIdParams:string  , userIdParams?:string){
+
+  const event_id = Number(eventIdParams)
+  const user_id = Number(userIdParams)
+  const comment = commentBody
+
+  const commentQuery =await pool.query("INSERT INTO comments(event_id , user_id , comment)  VALUES($1 , $2 , $3) RETURNING comment" , [event_id , user_id , comment])
+
+  const result = {
+
+    message:"comment created",
+
+    comment:commentQuery.rows[0]
+
+  }
+
+  return result
 }

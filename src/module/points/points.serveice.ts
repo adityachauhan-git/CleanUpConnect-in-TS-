@@ -1,5 +1,5 @@
 import { pool } from "../../common/config/db.js";
-import type { rewardData } from "./role.types.js";
+import type { leaderboardQuery, rewardData } from "./points.types.js";
 
 export async function getCreatorService(id: Number) {
   try {
@@ -43,4 +43,17 @@ export async function rewardVolenteerService(data: rewardData) {
   await pool.query("UPDATE users SET  points = points + 5 WHERE id = $1", [
     volenteer_id,
   ]);
+}
+
+export async function leaderboardService(data:leaderboardQuery){
+ 
+
+  const result = pool.query("SELECT * FROM users WHERE state = $1 ORDER BY points DESC LIMIT $2" , [data.state , data.limit])
+  
+  return (await result).rows.map(user=>({
+    id: user.id,
+    username: user.username,
+    points: user.points
+  }))
+
 }

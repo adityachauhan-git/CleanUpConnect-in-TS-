@@ -36,3 +36,7 @@ export interface eventData {
 export interface postParams {
   id: string;
 }
+
+export interface comment {
+  comment: string;
+}

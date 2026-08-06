@@ -15,3 +15,11 @@ export interface rewardData {
 export interface eventQuery {
   event_id: string;
 }
+
+export interface leaderboardQuery{
+
+  limit?:string
+  state?:string
+
+}
+

@@ -1,6 +1,7 @@
 import { request, response, type Request, type Response } from "express";
-import type { eventParams, position, post, postParams } from "./post.types.js";
+import type { comment, eventParams, position, post, postParams } from "./post.types.js";
 import {
+  addCommentService,
   createPostService,
   getMemberService,
   getPostService,
@@ -92,6 +93,8 @@ export async function getRecentPostsController(req: Request, res: Response) {
   const after = Number(afterQuery);
   try {
     const events = await getRecentPostsService(after);
+
+
 
     return res.status(200).json({
       message: "Events retrieved successfully",
@@ -186,5 +189,24 @@ export const updatePostController:RequestHandler<eventParams,post> = async(req ,
     
   }
 
+
+}
+
+export async function AddCommentController(req:Request<eventParams , comment> ,res:Response){
+
+ 
+
+  try{
+     const result= addCommentService(req.body , req.params.eventid , req.user?.id)
+
+     return res.status(201).json(result)
+  }
+  catch{
+    return res.status(500).json(
+      {
+        message:"Internal server error"
+      }
+    )
+  }
 
 }

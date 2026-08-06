@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { authMiddleware } from "../auth/auth.middleware.js";
 import {
+  AddCommentController,
   createPostController,
   getMemberController,
   getPostController,
@@ -13,6 +14,8 @@ import {
 const router = Router();
 
 router.post("/", authMiddleware, createPostController);
+router.post("/join/:eventid", authMiddleware, joinEventController);
+router.post("comment/:eventid" , authMiddleware , AddCommentController);
 router.get("/recent", authMiddleware, getRecentPostsController);
 router.get("/me", authMiddleware, myPostController);
 router.get("/members/:id", authMiddleware, getMemberController);
@@ -20,6 +23,5 @@ router.get("/members/:id", authMiddleware, getMemberController);
 router.get("/nearby", authMiddleware, nearbyEventsController);
 router.get("/:id", authMiddleware, getPostController);
 router.patch("/:id" , authMiddleware , )
-router.post("/join/:eventid", authMiddleware, joinEventController);
 
 export default router;
