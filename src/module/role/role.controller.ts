@@ -27,11 +27,11 @@ export async function eventCompleteController(req:Request<postParams>, res:Respo
 
 }
 
-export async function rewardVolenteerController(req:AuthRequest<userid>  , res:Response){
+export async function rewardVolenteerController(req:AuthRequest<userid,{},{},eventParams>  , res:Response){
 
     const id = Number(req.params.userid)
     const creator = Number(req.user?.id)
-    const event = Number(req.query.id)
+    const event = Number(req.query.eventid)
 
     try{
 
