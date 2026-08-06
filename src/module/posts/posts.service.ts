@@ -119,7 +119,9 @@ export async function joinService(data: eventData) {
     [user_id, event_id],
   );
 
-  increaseXPService()
+  const newXP = await increaseXPService(20 , user_id)
+
+  const levelUpdate = await levelService(newXP.newXP , newXP.level, user_id)
 
 }
 
@@ -145,6 +147,9 @@ export async function addCommentService(commentBody:comment  , eventIdParams:str
   const comment = commentBody
 
   const commentQuery =await pool.query("INSERT INTO comments(event_id , user_id , comment)  VALUES($1 , $2 , $3) RETURNING comment" , [event_id , user_id , comment])
+
+  const newXP = await increaseXPService(10 , user_id)
+  const level = await levelService(newXP.newXP , newXP.level , user_id)
 
   const result = {
 
