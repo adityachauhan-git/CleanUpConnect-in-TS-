@@ -1,4 +1,5 @@
 import { pool } from "../../common/config/db.js";
+import { logActivity, type activityType } from "../../common/utils/activity.js";
 import type { userid } from "../points/points.types.js";
 import type {
   comment,
@@ -14,6 +15,8 @@ async function increaseXPService(xp:number , id:number){
   const newXPQUery = await pool.query("UPDATE users WHERE id = $1 SET xp = xp+$2 RETURNING xp , level" , [id , xp])
 
   const { newXp, level} =  newXPQUery.rows[0]
+
+  
 
   return{
     newXP:newXp,
@@ -32,13 +35,26 @@ async function levelService(xp:number , oldLevel:number , user_id:number){
     }
   }
 
-  pool.query("UPDATE users WHERE id = $1 SET level = $2" , [user_id,newLevel])
+  await pool.query("UPDATE users WHERE id = $1 SET level = $2" , [user_id,newLevel])
 
+  const activity:activityType = {
+
+    actor_id:user_id,
+    type:"LEVEL_UP",
+    entity_type:"LEVEL",
+    entity_id:user_id,
+    metadata:{
+      newLevel:newLevel
+    }
+    
+  }
+
+  await logActivity(activity)
 }
 
 export async function createPostService(data: post) {
   const postQuery = await pool.query(
-    "INSERT INTO posts(title , content , location , creator_id) VALUES ($1 , $2 , $3 , $4)",
+    "INSERT INTO posts(title , content , location , creator_id) VALUES ($1 , $2 , $3 , $4) RETURNING id",
     [data.title, data.content, data.location, data.creator_id]
   );
 
@@ -46,7 +62,16 @@ export async function createPostService(data: post) {
 
   const level = await levelService(newXP.newXP , newXP.level, data.creator_id)
 
-  
+  const activity:activityType = {
+  actor_id: data.creator_id,
+    type: "EVENT_CREATED",
+    entity_type: "EVENT",
+    entity_id: postQuery.rows[0].id,
+    metadata: {
+      event_name:data.title
+    }  }
+
+   await logActivity(activity)
 
   console.log("Post created");
 }
