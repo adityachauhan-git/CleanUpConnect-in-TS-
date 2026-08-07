@@ -139,7 +139,7 @@ export async function joinService(data: eventData) {
 
   console.log(data);
 
-  await pool.query(
+  const JoinEventQuery = await pool.query(
     "INSERT INTO volenteers(volenteer_id , event_id)  VALUES($1 , $2)",
     [user_id, event_id],
   );
@@ -148,6 +148,18 @@ export async function joinService(data: eventData) {
 
   const levelUpdate = await levelService(newXP.newXP , newXP.level, user_id)
 
+  const activity:activityType = {
+    actor_id:user_id,
+    type:"JOINED EVENT",
+    entity_type:"EVENT",
+    entity_id:event_id,
+    metadata:{
+      event_name:
+    }
+
+  }
+
+  await logActivity(activity)
 }
 
 export async function getMemberService(data: number) {
@@ -175,6 +187,15 @@ export async function addCommentService(commentBody:comment  , eventIdParams:str
 
   const newXP = await increaseXPService(10 , user_id)
   const level = await levelService(newXP.newXP , newXP.level , user_id)
+  const activity:activityType = {
+     actor_id: user_id,
+    type: "COMMENT ADDED",
+    entity_type: "COMMENT",
+    entity_id: event_id,
+    metadata: {
+      event_name:
+    }
+  }
 
   const result = {
 
