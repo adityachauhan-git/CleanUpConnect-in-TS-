@@ -1,4 +1,4 @@
-import { pool } from "../config/db.js"
+import { pool } from "../../common/config/db.js"
 
 export interface activityType{
     actor_id:number,
@@ -16,3 +16,15 @@ export async function logActivity(activity:activityType){
 
     return activityQuery.rows[0]
 }
+
+async function getActivityService(conditions:object , userIdData?:string){
+
+    const user_id = Number(userIdData)
+
+    const activityQuery = await pool.query("SELECT metadata FROM activities WHERE actor_id = $1" , [user_id])
+
+    return activityQuery.rows[0]
+
+}
+
+export {getActivityService}

@@ -1,5 +1,5 @@
 import { pool } from "../../common/config/db.js";
-import { logActivity, type activityType } from "../../common/utils/activity.js";
+import { logActivity, type activityType } from "../activity/activity.service.js";
 import type { userid } from "../points/points.types.js";
 import type {
   comment,
@@ -193,7 +193,7 @@ export async function addCommentService(commentBody:comment  , eventIdParams:str
     entity_type: "COMMENT",
     entity_id: event_id,
     metadata: {
-      event_name:
+      event_name: 
     }
   }
 
