@@ -1,5 +1,6 @@
 import { pool } from "../../common/config/db.js"
 
+
 export interface activityType{
     actor_id:number,
     type: string,
@@ -17,10 +18,26 @@ export async function logActivity(activity:activityType){
     return activityQuery.rows[0]
 }
 
-async function getActivityService(conditions:object , userIdData?:string){
+async function getActivityService(conditionsData:object , userIdData?:string){
 
     const user_id = Number(userIdData)
 
+    let conditions: string[] = []
+
+   
+
+    for(const [key , value] of Object.entries(conditionsData)){
+        conditions.push(`${key} = $${value.length + 1}`)
+
+
+    }
+
+    const conditionsQuery = 
+        conditions.length>0
+        ? `WHERE ${conditions.join(" AND ")}`
+        :""
+
+    const values[] = []
     const activityQuery = await pool.query("SELECT metadata FROM activities WHERE actor_id = $1" , [user_id])
 
     return activityQuery.rows[0]
