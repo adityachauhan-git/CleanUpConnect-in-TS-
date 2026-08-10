@@ -25,11 +25,12 @@ async function getActivityService(conditionsData:object , userIdData?:string){
     let conditions: string[] = []
 
    
+    let values = []
 
     for(const [key , value] of Object.entries(conditionsData)){
         conditions.push(`${key} = $${value.length + 1}`)
 
-
+        values.push(value)
     }
 
     const conditionsQuery = 
@@ -37,8 +38,9 @@ async function getActivityService(conditionsData:object , userIdData?:string){
         ? `WHERE ${conditions.join(" AND ")}`
         :""
 
-    const values[] = []
-    const activityQuery = await pool.query("SELECT metadata FROM activities WHERE actor_id = $1" , [user_id])
+    const query = "SELECT metadata FROM activities "+conditionsQuery
+
+    const activityQuery = await pool.query(query , values)
 
     return activityQuery.rows[0]
 
